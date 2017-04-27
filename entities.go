@@ -14,7 +14,7 @@ type Api struct {
 	Creds Credentials
 }
 
-type LastestCodes struct {
+type CodesInfo struct {
 	Total int    `json:"total"`
 	Count int    `json:"count"`
 	Codes []Code `json:"codes"`

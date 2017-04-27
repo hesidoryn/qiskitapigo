@@ -25,20 +25,28 @@ func IBMQuantumExperience(token string) Api {
 	return Api{creds}
 }
 
-func (api *Api) Get_Code() int {
-	return 1
+func (api *Api) Get_Code(idCode string) Code {
+	codesInfo := CodesInfo{}
+
+	resp, err := http.Get(URL + "/users/" + api.Creds.UserID + "/codes/" + idCode + "/?access_token=" + api.Creds.ID)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	json.NewDecoder(resp.Body).Decode(&codesInfo)
+	return codesInfo.Codes[0]
 }
 
-func (api *Api) Get_Last_Codes() interface{} {
-	lastestCodes := LastestCodes{}
+func (api *Api) Get_Last_Codes() CodesInfo {
+	codesInfo := CodesInfo{}
 
 	resp, err := http.Get(URL + "/users/" + api.Creds.UserID + "/codes/lastest?access_token=" + api.Creds.ID)
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	json.NewDecoder(resp.Body).Decode(&lastestCodes)
-	return lastestCodes
+	json.NewDecoder(resp.Body).Decode(&codesInfo)
+	return codesInfo
 }
 
 func (api *Api) Get_Execution() interface{} {
