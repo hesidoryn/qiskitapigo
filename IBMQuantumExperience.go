@@ -5,22 +5,9 @@ import (
 	"encoding/json"
 	"log"
 	"net/http"
-	"time"
 )
 
 const URL = "https://quantumexperience.ng.bluemix.net/api"
-
-type Credentials struct {
-	ID       string    `json:"id"`
-	TTL      int       `json:"ttl"`
-	Created  time.Time `json:"created"`
-	UserID   string    `json:"userId"`
-	ApiToken string
-}
-
-type Api struct {
-	Creds Credentials
-}
 
 func IBMQuantumExperience(token string) Api {
 	creds := Credentials{}
@@ -43,7 +30,15 @@ func (api *Api) Get_Code() int {
 }
 
 func (api *Api) Get_Last_Codes() interface{} {
-	return 2
+	lastestCodes := LastestCodes{}
+
+	resp, err := http.Get(URL + "/users/" + api.Creds.UserID + "/codes/lastest?access_token=" + api.Creds.ID)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	json.NewDecoder(resp.Body).Decode(&lastestCodes)
+	return lastestCodes
 }
 
 func (api *Api) Get_Execution() interface{} {
