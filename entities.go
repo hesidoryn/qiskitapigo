@@ -14,7 +14,7 @@ type Api struct {
 	Creds Credentials
 }
 
-type CodesInfo struct {
+type CodesResult struct {
 	Total int    `json:"total"`
 	Count int    `json:"count"`
 	Codes []Code `json:"codes"`
@@ -41,13 +41,14 @@ type Code struct {
 }
 
 type JsonQASM struct {
-	Playgrounds   []Playground `json:"playground"`
-	NumberColumns int          `json:"numberColumns"`
-	NumberLines   int          `json:"numberLines"`
-	NumberGates   int          `json:"numberGates"`
-	HasMeasures   bool         `json:"hasMeasures"`
-	Topology      string       `json:"topology"`
-	HasBloch      bool         `json:"hasBloch"`
+	Playgrounds     []Playground  `json:"playground"`
+	NumberColumns   int           `json:"numberColumns"`
+	NumberLines     int           `json:"numberLines"`
+	NumberGates     int           `json:"numberGates"`
+	HasMeasures     bool          `json:"hasMeasures"`
+	Topology        string        `json:"topology"`
+	HasBloch        bool          `json:"hasBloch"`
+	GateDefinitions []interface{} `json:"gateDefinitions"`
 }
 
 type Playground struct {
@@ -57,7 +58,74 @@ type Playground struct {
 }
 
 type Gate struct {
-	Position int    `json:"position"`
-	Name     string `json:"name"`
-	Qasm     string `json:"qasm"`
+	Position    int    `json:"position"`
+	Name        string `json:"name"`
+	Qasm        string `json:"qasm"`
+	MeasureCreg struct {
+		Line int `json:"line"`
+		Bit  int `json:"bit"`
+	} `json:"measureCreg"`
+	IsOperation bool `json:"isOperation"`
+}
+
+type Execution struct {
+	Result struct {
+		Date time.Time `json:"date"`
+		Data struct {
+			P struct {
+				Qubits []int     `json:"qubits"`
+				Labels []string  `json:"labels"`
+				Values []float64 `json:"values"`
+			} `json:"p"`
+		} `json:"data"`
+
+		Qasm               string  `json:"qasm"`
+		SerialNumberDevice string  `json:"serialNumberDevice"`
+		Time               float64 `json:"time"` // ?????????????
+	} `json:"result"`
+	StartDate        time.Time `json:"startDate"`
+	ModificationDate int       `json:"modificationDate"` // ?????????????
+	Time             float64   `json:"time"`             // ????????????????????
+	EndDate          time.Time `json:"endDate"`
+	TypeCredits      string    `json:"typeCredits"`
+	Status           struct {
+		Id string `json:"id"`
+	} `json:"status"`
+	DeviceRunType string `json:"deviceRunType"`
+	IP            struct {
+		IP        string `json:"ip"`
+		Country   string `json:"country"`
+		Continent string `json:"continent"`
+	} `json:"ip"`
+	Calibration struct {
+		Date              time.Time  `json:"date"`
+		Device            string     `json:"device"`
+		FridgeTemperature float64    `json:"fridge_temperature"`
+		Properties        []Property `json:"properties"`
+	} `json:"calibration"`
+	Shots           int      `json:"shots"`
+	ParamsCustomize struct{} `json:"paramsCustomize"`
+	Deleted         bool     `json:"deleted"`
+	UserDleted      bool     `json:"userDeleted"`
+	ID              string   `json:"id"`
+	CodeID          string   `json:"codeId"`
+	DeviceID        string   `json:"deviceId"`
+	UserID          string   `json:"userId"`
+}
+
+type Property struct {
+	Values struct {
+		E_G01 float64 `json:"e_g{01}"`
+		E_G02 float64 `json:"e_g{02}"`
+		E_G12 float64 `json:"e_g{12}"`
+		E_G32 float64 `json:"e_g{32}"`
+		E_G34 float64 `json:"e_g{34}"`
+		E_G42 float64 `json:"e_g{42}"`
+		T_2   float64 `json:"t_2"`
+		E_R   float64 `json:"e_r"`
+		T_1   float64 `json:"t_1"`
+		E_G   float64 `json:"E_G"`
+		F     float64 `json:"f"`
+	} `json:"values"`
+	Key string `json:"key"`
 }
